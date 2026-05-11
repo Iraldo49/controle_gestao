@@ -27,6 +27,12 @@
         .alert-slide {
             animation: slideIn 0.3s ease-out;
         }
+        .btn-reset {
+            transition: all 0.3s ease;
+        }
+        .btn-reset:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100">
@@ -37,12 +43,27 @@
                 <div>
                     <h1 class="text-3xl font-bold mb-2">📦 Sistema de Controle de Estoque</h1>
                     <p class="text-green-100">Moçambique • Valores em Metical (MTn)</p>
+                    <p class="text-xs text-green-200 mt-1">💾 Dados salvos automaticamente no navegador</p>
                 </div>
                 <div class="text-right">
                     <div class="text-2xl font-bold">🇲🇿</div>
                     <div class="text-sm opacity-90">Actualização em tempo real</div>
                 </div>
             </div>
+        </div>
+
+        <!-- Botões de Ações Globais -->
+        <div class="flex gap-3 mb-6 justify-end">
+            <button id="btnExportar" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center gap-2">
+                📥 Exportar Dados
+            </button>
+            <button id="btnImportar" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center gap-2">
+                📤 Importar Dados
+            </button>
+            <button id="btnLimpar" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center gap-2 btn-reset">
+                🗑️ Limpar Todos os Dados
+            </button>
+            <input type="file" id="fileImportar" accept=".json" style="display: none;">
         </div>
 
         <!-- Painel de Estatísticas Rápidas -->
@@ -199,7 +220,7 @@
 
                 <!-- Gráfico de Estoque -->
                 <div class="bg-white rounded-xl shadow-md p-6">
-                                    <h3 class="text-lg font-bold mb-4 text-gray-800">📈 Gráfico de Quantidade em Estoque</h3>
+                    <h3 class="text-lg font-bold mb-4 text-gray-800">📈 Gráfico de Quantidade em Estoque</h3>
                     <canvas id="estoqueChart" height="200"></canvas>
                 </div>
             </div>
@@ -237,9 +258,16 @@
             carregarDados() {
                 const dados = localStorage.getItem('estoque_sistema_mtn');
                 if (dados) {
-                    const parsed = JSON.parse(dados);
-                    this.produtos = new Map(parsed.produtos.map(p => [p.id, new Produto(p.id, p.nome, p.quantidade, p.precoCompra, p.precoVenda, p.estoqueMinimo)]));
-                    this.historico = parsed.historico;
+                    try {
+                        const parsed = JSON.parse(dados);
+                        this.produtos = new Map(parsed.produtos.map(p => [p.id, new Produto(p.id, p.nome, p.quantidade, p.precoCompra, p.precoVenda, p.estoqueMinimo)]));
+                        this.historico = parsed.historico;
+                        console.log('✅ Dados carregados do localStorage');
+                    } catch (e) {
+                        console.error('Erro ao carregar dados:', e);
+                    }
+                } else {
+                    console.log('ℹ️ Nenhum dado encontrado no localStorage');
                 }
                 this.atualizarUI();
             }
@@ -247,9 +275,11 @@
             salvarDados() {
                 const dados = {
                     produtos: Array.from(this.produtos.values()),
-                    historico: this.historico
+                    historico: this.historico,
+                    ultimaAtualizacao: new Date().toISOString()
                 };
                 localStorage.setItem('estoque_sistema_mtn', JSON.stringify(dados));
+                console.log('💾 Dados salvos no localStorage');
             }
 
             cadastrarProduto(nome, quantidade, precoCompra, precoVenda, estoqueMinimo) {
@@ -276,7 +306,6 @@
                     return false;
                 }
 
-                const quantidadeAntiga = produto.quantidade;
                 if (tipo === 'entrada') {
                     produto.quantidade += quantidade;
                 } else {
@@ -318,6 +347,57 @@
 
             getValorTotalEstoque() {
                 return Array.from(this.produtos.values()).reduce((total, p) => total + (p.quantidade * p.precoVenda), 0);
+            }
+
+            limparTodosDados() {
+                if (confirm('⚠️ Tem certeza que deseja limpar TODOS os dados? Esta ação não pode ser desfeita!')) {
+                    this.produtos.clear();
+                    this.historico = [];
+                    localStorage.removeItem('estoque_sistema_mtn');
+                    this.atualizarUI();
+                    this.mostrarAlerta('success', '🗑️ Todos os dados foram removidos com sucesso!');
+                }
+            }
+
+            exportarDados() {
+                const dados = {
+                    produtos: Array.from(this.produtos.values()),
+                    historico: this.historico,
+                    dataExportacao: new Date().toLocaleString('pt-PT'),
+                    versao: '1.0'
+                };
+                const dadosStr = JSON.stringify(dados, null, 2);
+                const blob = new Blob([dadosStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `estoque_${new Date().toISOString().slice(0,19)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                this.mostrarAlerta('success', '📥 Dados exportados com sucesso!');
+            }
+
+            importarDados(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const dados = JSON.parse(e.target.result);
+                        if (dados.produtos && dados.historico) {
+                            this.produtos = new Map(dados.produtos.map(p => [p.id, new Produto(p.id, p.nome, p.quantidade, p.precoCompra, p.precoVenda, p.estoqueMinimo)]));
+                            this.historico = dados.historico;
+                            this.salvarDados();
+                            this.atualizarUI();
+                            this.mostrarAlerta('success', '📤 Dados importados com sucesso!');
+                        } else {
+                            this.mostrarAlerta('error', '❌ Arquivo inválido!');
+                        }
+                    } catch (error) {
+                        this.mostrarAlerta('error', '❌ Erro ao importar dados!');
+                    }
+                };
+                reader.readAsText(file);
             }
 
             atualizarUI() {
@@ -362,7 +442,7 @@
                     return;
                 }
 
-                tbody.innerHTML = this.historico.map(h => `
+                tbody.innerHTML = this.historico.slice(0, 50).map(h => `
                     <tr class="border-b hover:bg-gray-50">
                         <td class="px-4 py-2 text-sm">${h.data}</td>
                         <td class="px-4 py-2">${h.produtoNome}</td>
@@ -421,7 +501,10 @@
                 const ctx = document.getElementById('estoqueChart').getContext('2d');
                 const nomes = Array.from(this.produtos.values()).map(p => p.nome);
                 const quantidades = Array.from(this.produtos.values()).map(p => p.quantidade);
-                const cores = quantidades.map(q => q <= Array.from(this.produtos.values()).find(p => p.quantidade === q)?.estoqueMinimo ? '#ef4444' : '#10b981');
+                const cores = quantidades.map((q, index) => {
+                    const produto = Array.from(this.produtos.values())[index];
+                    return q <= produto.estoqueMinimo ? '#ef4444' : '#10b981';
+                });
 
                 if (window.estoqueChart) window.estoqueChart.destroy();
                 
@@ -519,6 +602,26 @@
             }
         });
 
+        // Botões de ações globais
+        document.getElementById('btnLimpar').addEventListener('click', () => {
+            sistema.limparTodosDados();
+        });
+
+        document.getElementById('btnExportar').addEventListener('click', () => {
+            sistema.exportarDados();
+        });
+
+        document.getElementById('btnImportar').addEventListener('click', () => {
+            document.getElementById('fileImportar').click();
+        });
+
+        document.getElementById('fileImportar').addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                sistema.importarDados(e.target.files[0]);
+                e.target.value = '';
+            }
+        });
+
         // Sistema de Tabs
         document.querySelectorAll('.tab-button').forEach(button => {
             button.addEventListener('click', () => {
@@ -546,6 +649,9 @@
                 }
             });
         });
+
+        // Indicador de dados salvos (console)
+        console.log('🚀 Sistema inicializado - Dados salvos automaticamente no localStorage');
     </script>
 </body>
 </html>

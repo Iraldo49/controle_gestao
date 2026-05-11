@@ -27,17 +27,11 @@
         .alert-slide {
             animation: slideIn 0.3s ease-out;
         }
-        .btn-reset {
-            transition: all 0.3s ease;
-        }
-        .btn-reset:hover {
-            transform: scale(1.05);
-        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100">
     <div class="container mx-auto px-4 py-8 max-w-7xl">
-        <!-- Header com tema Moçambique -->
+        <!-- Header -->
         <div class="bg-gradient-to-r from-green-700 via-red-600 to-black rounded-2xl shadow-lg p-6 mb-8 text-white">
             <div class="flex items-center justify-between">
                 <div>
@@ -52,35 +46,28 @@
             </div>
         </div>
 
-        <!-- Botões de Ações Globais -->
+        <!-- Botões de Ação -->
         <div class="flex gap-3 mb-6 justify-end">
-            <button id="btnExportar" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center gap-2">
-                📥 Exportar Dados
-            </button>
-            <button id="btnImportar" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center gap-2">
-                📤 Importar Dados
-            </button>
-            <button id="btnLimpar" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center gap-2 btn-reset">
+            <button id="btnLimpar" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-200">
                 🗑️ Limpar Todos os Dados
             </button>
-            <input type="file" id="fileImportar" accept=".json" style="display: none;">
         </div>
 
-        <!-- Painel de Estatísticas Rápidas -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8" id="statsPanel">
-            <div class="bg-white rounded-xl shadow-md p-4 card-hover">
+        <!-- Painel de Estatísticas -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-xl shadow-md p-4">
                 <div class="text-gray-500 text-sm">Total de Produtos</div>
                 <div class="text-2xl font-bold text-gray-800" id="totalProdutos">0</div>
             </div>
-            <div class="bg-white rounded-xl shadow-md p-4 card-hover">
+            <div class="bg-white rounded-xl shadow-md p-4">
                 <div class="text-gray-500 text-sm">Valor Total do Estoque</div>
                 <div class="text-2xl font-bold text-green-600" id="valorTotalEstoque">0.00 MTn</div>
             </div>
-            <div class="bg-white rounded-xl shadow-md p-4 card-hover">
+            <div class="bg-white rounded-xl shadow-md p-4">
                 <div class="text-gray-500 text-sm">Produtos com Estoque Baixo</div>
                 <div class="text-2xl font-bold text-red-600" id="produtosBaixo">0</div>
             </div>
-            <div class="bg-white rounded-xl shadow-md p-4 card-hover">
+            <div class="bg-white rounded-xl shadow-md p-4">
                 <div class="text-gray-500 text-sm">Total de Movimentações</div>
                 <div class="text-2xl font-bold text-blue-600" id="totalMovimentacoes">0</div>
             </div>
@@ -88,137 +75,89 @@
 
         <!-- Grid Principal -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Coluna Esquerda: Cadastro e Movimentações -->
+            <!-- Coluna Esquerda -->
             <div class="lg:col-span-1 space-y-6">
-                <!-- Cadastro de Produtos -->
+                <!-- Cadastro -->
                 <div class="bg-white rounded-xl shadow-md p-6">
-                    <h2 class="text-xl font-bold mb-4 text-gray-800">➕ Cadastrar Novo Produto</h2>
-                    <form id="productForm" class="space-y-3">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome do Produto</label>
-                            <input type="text" id="prodNome" placeholder="Ex: Arroz, Óleo, Caderno..." required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Quantidade Inicial</label>
-                            <input type="number" id="prodQtd" placeholder="0" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Preço de Compra (MTn)</label>
-                            <input type="number" id="prodPrecoCompra" placeholder="0.00" step="0.01" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Preço de Venda (MTn)</label>
-                            <input type="number" id="prodPrecoVenda" placeholder="0.00" step="0.01" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Estoque Mínimo</label>
-                            <input type="number" id="prodEstoqueMin" placeholder="0" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                        </div>
-                        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 font-semibold transition duration-200">
+                    <h2 class="text-xl font-bold mb-4 text-gray-800">➕ Cadastrar Produto</h2>
+                    <div class="space-y-3">
+                        <input type="text" id="prodNome" placeholder="Nome do produto" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <input type="number" id="prodQtd" placeholder="Quantidade inicial" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <input type="number" id="prodPrecoCompra" placeholder="Preço de compra (MTn)" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <input type="number" id="prodPrecoVenda" placeholder="Preço de venda (MTn)" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <input type="number" id="prodEstoqueMin" placeholder="Estoque mínimo" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <button id="btnCadastrar" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 font-semibold">
                             Cadastrar Produto
                         </button>
-                    </form>
+                    </div>
                 </div>
 
-                <!-- Entrada/Saída -->
+                <!-- Movimentação -->
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <h2 class="text-xl font-bold mb-4 text-gray-800">🔄 Registrar Movimentação</h2>
-                    <form id="movementForm" class="space-y-3">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Produto</label>
-                            <select id="movProdutoId" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                                <option value="">Selecione um produto</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Movimentação</label>
-                            <select id="movTipo" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                                <option value="entrada">📥 Entrada (Compra)</option>
-                                <option value="saida">📤 Saída (Venda)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Quantidade</label>
-                            <input type="number" id="movQuantidade" placeholder="0" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Valor Unitário (MTn)</label>
-                            <input type="number" id="movValorUnitario" placeholder="0.00" step="0.01" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                        </div>
-                        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-semibold transition duration-200">
+                    <div class="space-y-3">
+                        <select id="movProdutoId" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option value="">Selecione um produto</option>
+                        </select>
+                        <select id="movTipo" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option value="entrada">📥 Entrada (Compra)</option>
+                            <option value="saida">📤 Saída (Venda)</option>
+                        </select>
+                        <input type="number" id="movQuantidade" placeholder="Quantidade" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <input type="number" id="movValorUnitario" placeholder="Valor unitário (MTn)" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <button id="btnRegistrar" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-semibold">
                             Registrar Movimentação
                         </button>
-                    </form>
+                    </div>
                 </div>
             </div>
 
-            <!-- Coluna Direita: Relatórios e Visualização -->
+            <!-- Coluna Direita -->
             <div class="lg:col-span-2 space-y-6">
-                <!-- Tabs de Relatórios -->
+                <!-- Tabs -->
                 <div class="bg-white rounded-xl shadow-md overflow-hidden">
                     <div class="border-b border-gray-200">
                         <div class="flex">
-                            <button class="tab-button active px-6 py-3 text-sm font-medium text-green-600 border-b-2 border-green-600" data-tab="estoque">
+                            <button class="tab-btn active px-6 py-3 text-sm font-medium text-green-600 border-b-2 border-green-600" data-tab="estoque">
                                 📊 Estoque Actual
                             </button>
-                            <button class="tab-button px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-800" data-tab="historico">
+                            <button class="tab-btn px-6 py-3 text-sm font-medium text-gray-600" data-tab="historico">
                                 📜 Histórico
                             </button>
-                            <button class="tab-button px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-800" data-tab="alertas">
+                            <button class="tab-btn px-6 py-3 text-sm font-medium text-gray-600" data-tab="alertas">
                                 ⚠️ Alertas
                             </button>
                         </div>
                     </div>
                     
-                    <!-- Conteúdo das Tabs -->
-                    <div id="tabEstoque" class="tab-content p-6">
+                    <div id="tabEstoque" class="tab-conteudo p-6">
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm">
                                 <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left">ID</th>
-                                        <th class="px-4 py-2 text-left">Produto</th>
-                                        <th class="px-4 py-2 text-right">Quantidade</th>
-                                        <th class="px-4 py-2 text-right">Preço Venda</th>
-                                        <th class="px-4 py-2 text-right">Valor Total</th>
-                                        <th class="px-4 py-2 text-right">Est. Mínimo</th>
-                                    </tr>
+                                    <tr><th class="px-4 py-2">ID</th><th class="px-4 py-2">Produto</th><th class="px-4 py-2">Qtd</th><th class="px-4 py-2">Preço Venda</th><th class="px-4 py-2">Valor Total</th><th class="px-4 py-2">Mínimo</th></tr>
                                 </thead>
-                                <tbody id="estoqueTableBody">
-                                    <tr><td colspan="6" class="text-center py-4 text-gray-500">Nenhum produto cadastrado</td></tr>
-                                </tbody>
+                                <tbody id="estoqueTableBody"></tbody>
                             </table>
                         </div>
                     </div>
                     
-                    <div id="tabHistorico" class="tab-content hidden p-6">
+                    <div id="tabHistorico" class="tab-conteudo hidden p-6">
                         <div class="overflow-x-auto max-h-96 overflow-y-auto">
                             <table class="w-full text-sm">
                                 <thead class="bg-gray-50 sticky top-0">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left">Data/Hora</th>
-                                        <th class="px-4 py-2 text-left">Produto</th>
-                                        <th class="px-4 py-2 text-center">Tipo</th>
-                                        <th class="px-4 py-2 text-right">Quantidade</th>
-                                        <th class="px-4 py-2 text-right">Valor Unit.</th>
-                                        <th class="px-4 py-2 text-right">Estoque pós</th>
-                                    </tr>
+                                    <tr><th class="px-4 py-2">Data</th><th class="px-4 py-2">Produto</th><th class="px-4 py-2">Tipo</th><th class="px-4 py-2">Qtd</th><th class="px-4 py-2">Valor Unit.</th><th class="px-4 py-2">Estoque pós</th></tr>
                                 </thead>
-                                <tbody id="historicoTableBody">
-                                    <tr><td colspan="6" class="text-center py-4 text-gray-500">Nenhuma movimentação registrada</td></tr>
-                                </tbody>
+                                <tbody id="historicoTableBody"></tbody>
                             </table>
                         </div>
                     </div>
                     
-                    <div id="tabAlertas" class="tab-content hidden p-6">
-                        <div id="alertasList" class="space-y-2">
-                            <div class="text-gray-500 text-center py-4">Nenhum produto com estoque baixo</div>
-                        </div>
+                    <div id="tabAlertas" class="tab-conteudo hidden p-6">
+                        <div id="alertasList"></div>
                     </div>
                 </div>
 
-                <!-- Gráfico de Estoque -->
+                <!-- Gráfico -->
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <h3 class="text-lg font-bold mb-4 text-gray-800">📈 Gráfico de Quantidade em Estoque</h3>
                     <canvas id="estoqueChart" height="200"></canvas>
@@ -228,430 +167,336 @@
     </div>
 
     <script>
-        // Formatar valor em Metical
+        // Formatar Moeda
         function formatMTn(valor) {
-            return valor.toLocaleString('pt-PT', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }) + ' MTn';
+            return valor.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' MTn';
         }
 
-        // Sistema de Estoque
-        class Produto {
-            constructor(id, nome, quantidade, precoCompra, precoVenda, estoqueMinimo) {
-                this.id = id;
-                this.nome = nome;
-                this.quantidade = quantidade;
-                this.precoCompra = precoCompra;
-                this.precoVenda = precoVenda;
-                this.estoqueMinimo = estoqueMinimo;
+        // Dados
+        let produtos = [];
+        let historico = [];
+        let nextId = 1;
+
+        // Carregar dados do localStorage
+        function carregarDados() {
+            const saved = localStorage.getItem('estoque_mtn');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    produtos = data.produtos || [];
+                    historico = data.historico || [];
+                    nextId = data.nextId || 1;
+                    console.log('✅ Dados carregados:', produtos.length, 'produtos');
+                } catch(e) {
+                    console.error('Erro ao carregar:', e);
+                }
             }
+            atualizarTudo();
         }
 
-        class ControleEstoque {
-            constructor() {
-                this.produtos = new Map();
-                this.historico = [];
-                this.carregarDados();
-            }
-
-            carregarDados() {
-                const dados = localStorage.getItem('estoque_sistema_mtn');
-                if (dados) {
-                    try {
-                        const parsed = JSON.parse(dados);
-                        this.produtos = new Map(parsed.produtos.map(p => [p.id, new Produto(p.id, p.nome, p.quantidade, p.precoCompra, p.precoVenda, p.estoqueMinimo)]));
-                        this.historico = parsed.historico;
-                        console.log('✅ Dados carregados do localStorage');
-                    } catch (e) {
-                        console.error('Erro ao carregar dados:', e);
-                    }
-                } else {
-                    console.log('ℹ️ Nenhum dado encontrado no localStorage');
-                }
-                this.atualizarUI();
-            }
-
-            salvarDados() {
-                const dados = {
-                    produtos: Array.from(this.produtos.values()),
-                    historico: this.historico,
-                    ultimaAtualizacao: new Date().toISOString()
-                };
-                localStorage.setItem('estoque_sistema_mtn', JSON.stringify(dados));
-                console.log('💾 Dados salvos no localStorage');
-            }
-
-            cadastrarProduto(nome, quantidade, precoCompra, precoVenda, estoqueMinimo) {
-                const id = this.produtos.size + 1;
-                const novoProduto = new Produto(id, nome, quantidade, precoCompra, precoVenda, estoqueMinimo);
-                this.produtos.set(id, novoProduto);
-                
-                this.registrarHistorico(id, 'entrada', quantidade, precoCompra, quantidade, 'Cadastro inicial');
-                this.salvarDados();
-                this.atualizarUI();
-                this.mostrarAlerta('success', `✅ Produto "${nome}" cadastrado com sucesso!`);
-                return true;
-            }
-
-            registrarMovimento(id, tipo, quantidade, valorUnitario) {
-                const produto = this.produtos.get(id);
-                if (!produto) {
-                    this.mostrarAlerta('error', '❌ Produto não encontrado!');
-                    return false;
-                }
-
-                if (tipo === 'saida' && produto.quantidade < quantidade) {
-                    this.mostrarAlerta('error', `❌ Estoque insuficiente! Disponível: ${produto.quantidade} unidades`);
-                    return false;
-                }
-
-                if (tipo === 'entrada') {
-                    produto.quantidade += quantidade;
-                } else {
-                    produto.quantidade -= quantidade;
-                }
-
-                this.registrarHistorico(id, tipo, quantidade, valorUnitario, produto.quantidade);
-                this.salvarDados();
-                this.atualizarUI();
-
-                // Verificar alerta de estoque baixo
-                if (produto.quantidade <= produto.estoqueMinimo) {
-                    this.mostrarAlerta('warning', `⚠️ ALERTA: ${produto.nome} está com estoque baixo (${produto.quantidade} unidades). Mínimo: ${produto.estoqueMinimo}`);
-                } else {
-                    this.mostrarAlerta('success', `✅ ${tipo === 'entrada' ? 'Entrada' : 'Saída'} registrada com sucesso!`);
-                }
-                return true;
-            }
-
-            registrarHistorico(produtoId, tipo, quantidade, valorUnitario, estoquePos, observacao = '') {
-                const produto = this.produtos.get(produtoId);
-                this.historico.unshift({
-                    data: new Date().toLocaleString('pt-PT'),
-                    produtoId: produtoId,
-                    produtoNome: produto ? produto.nome : 'Produto removido',
-                    tipo: tipo,
-                    quantidade: quantidade,
-                    valorUnitario: valorUnitario,
-                    estoquePos: estoquePos,
-                    observacao: observacao
-                });
-                // Manter apenas últimos 100 registros
-                if (this.historico.length > 100) this.historico.pop();
-            }
-
-            getProdutosBaixoEstoque() {
-                return Array.from(this.produtos.values()).filter(p => p.quantidade <= p.estoqueMinimo);
-            }
-
-            getValorTotalEstoque() {
-                return Array.from(this.produtos.values()).reduce((total, p) => total + (p.quantidade * p.precoVenda), 0);
-            }
-
-            limparTodosDados() {
-                if (confirm('⚠️ Tem certeza que deseja limpar TODOS os dados? Esta ação não pode ser desfeita!')) {
-                    this.produtos.clear();
-                    this.historico = [];
-                    localStorage.removeItem('estoque_sistema_mtn');
-                    this.atualizarUI();
-                    this.mostrarAlerta('success', '🗑️ Todos os dados foram removidos com sucesso!');
-                }
-            }
-
-            exportarDados() {
-                const dados = {
-                    produtos: Array.from(this.produtos.values()),
-                    historico: this.historico,
-                    dataExportacao: new Date().toLocaleString('pt-PT'),
-                    versao: '1.0'
-                };
-                const dadosStr = JSON.stringify(dados, null, 2);
-                const blob = new Blob([dadosStr], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `estoque_${new Date().toISOString().slice(0,19)}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                this.mostrarAlerta('success', '📥 Dados exportados com sucesso!');
-            }
-
-            importarDados(file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const dados = JSON.parse(e.target.result);
-                        if (dados.produtos && dados.historico) {
-                            this.produtos = new Map(dados.produtos.map(p => [p.id, new Produto(p.id, p.nome, p.quantidade, p.precoCompra, p.precoVenda, p.estoqueMinimo)]));
-                            this.historico = dados.historico;
-                            this.salvarDados();
-                            this.atualizarUI();
-                            this.mostrarAlerta('success', '📤 Dados importados com sucesso!');
-                        } else {
-                            this.mostrarAlerta('error', '❌ Arquivo inválido!');
-                        }
-                    } catch (error) {
-                        this.mostrarAlerta('error', '❌ Erro ao importar dados!');
-                    }
-                };
-                reader.readAsText(file);
-            }
-
-            atualizarUI() {
-                this.atualizarStats();
-                this.atualizarTabelaEstoque();
-                this.atualizarHistorico();
-                this.atualizarAlertas();
-                this.atualizarSelectProdutos();
-                this.atualizarGrafico();
-            }
-
-            atualizarStats() {
-                document.getElementById('totalProdutos').textContent = this.produtos.size;
-                document.getElementById('valorTotalEstoque').innerHTML = formatMTn(this.getValorTotalEstoque());
-                document.getElementById('produtosBaixo').textContent = this.getProdutosBaixoEstoque().length;
-                document.getElementById('totalMovimentacoes').textContent = this.historico.length;
-            }
-
-            atualizarTabelaEstoque() {
-                const tbody = document.getElementById('estoqueTableBody');
-                if (this.produtos.size === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-gray-500">Nenhum produto cadastrado</td></tr>';
-                    return;
-                }
-
-                tbody.innerHTML = Array.from(this.produtos.values()).map(p => `
-                    <tr class="border-b hover:bg-gray-50 ${p.quantidade <= p.estoqueMinimo ? 'bg-red-50' : ''}">
-                        <td class="px-4 py-2">${p.id}</td>
-                        <td class="px-4 py-2 font-medium">${p.nome}</td>
-                        <td class="px-4 py-2 text-right font-bold ${p.quantidade <= p.estoqueMinimo ? 'text-red-600' : 'text-gray-800'}">${p.quantidade}</td>
-                        <td class="px-4 py-2 text-right">${formatMTn(p.precoVenda)}</td>
-                        <td class="px-4 py-2 text-right">${formatMTn(p.quantidade * p.precoVenda)}</td>
-                        <td class="px-4 py-2 text-right">${p.estoqueMinimo}</td>
-                    </tr>
-                `).join('');
-            }
-
-            atualizarHistorico() {
-                const tbody = document.getElementById('historicoTableBody');
-                if (this.historico.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-gray-500">Nenhuma movimentação registrada</td></tr>';
-                    return;
-                }
-
-                tbody.innerHTML = this.historico.slice(0, 50).map(h => `
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="px-4 py-2 text-sm">${h.data}</td>
-                        <td class="px-4 py-2">${h.produtoNome}</td>
-                        <td class="px-4 py-2 text-center">
-                            <span class="px-2 py-1 rounded-full text-xs font-semibold ${h.tipo === 'entrada' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
-                                ${h.tipo === 'entrada' ? '📥 Entrada' : '📤 Saída'}
-                            </span>
-                        </td>
-                        <td class="px-4 py-2 text-right">${h.quantidade}</td>
-                        <td class="px-4 py-2 text-right">${formatMTn(h.valorUnitario)}</td>
-                        <td class="px-4 py-2 text-right font-medium">${h.estoquePos}</td>
-                    </tr>
-                `).join('');
-            }
-
-            atualizarAlertas() {
-                const alertasDiv = document.getElementById('alertasList');
-                const baixos = this.getProdutosBaixoEstoque();
-                
-                if (baixos.length === 0) {
-                    alertasDiv.innerHTML = '<div class="text-green-600 text-center py-4">✅ Todos os produtos estão com estoque adequado!</div>';
-                    return;
-                }
-
-                alertasDiv.innerHTML = baixos.map(p => `
-                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h4 class="font-bold text-red-800">⚠️ ${p.nome}</h4>
-                                <p class="text-sm text-red-600">Estoque actual: ${p.quantidade} unidades | Mínimo: ${p.estoqueMinimo}</p>
-                                <p class="text-xs text-red-500 mt-1">Valor em estoque: ${formatMTn(p.quantidade * p.precoVenda)}</p>
-                            </div>
-                            <div class="text-3xl">⚠️</div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            atualizarSelectProdutos() {
-                const select = document.getElementById('movProdutoId');
-                if (this.produtos.size === 0) {
-                    select.innerHTML = '<option value="">Nenhum produto cadastrado</option>';
-                    return;
-                }
-
-                select.innerHTML = '<option value="">Selecione um produto</option>' + 
-                    Array.from(this.produtos.values()).map(p => `<option value="${p.id}">${p.id} - ${p.nome} (Estoque: ${p.quantidade} unid.)</option>`).join('');
-            }
-
-            atualizarGrafico() {
-                if (this.produtos.size === 0) {
-                    if (window.estoqueChart) window.estoqueChart.destroy();
-                    return;
-                }
-
-                const ctx = document.getElementById('estoqueChart').getContext('2d');
-                const nomes = Array.from(this.produtos.values()).map(p => p.nome);
-                const quantidades = Array.from(this.produtos.values()).map(p => p.quantidade);
-                const cores = quantidades.map((q, index) => {
-                    const produto = Array.from(this.produtos.values())[index];
-                    return q <= produto.estoqueMinimo ? '#ef4444' : '#10b981';
-                });
-
-                if (window.estoqueChart) window.estoqueChart.destroy();
-                
-                window.estoqueChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: nomes,
-                        datasets: [{
-                            label: 'Quantidade em Estoque',
-                            data: quantidades,
-                            backgroundColor: cores,
-                            borderColor: cores.map(c => c === '#ef4444' ? '#dc2626' : '#059669'),
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Quantidade (unidades)'
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return `Quantidade: ${context.raw} unidades`;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            mostrarAlerta(tipo, mensagem) {
-                const alertDiv = document.createElement('div');
-                const config = {
-                    success: { bg: 'bg-green-500', icon: '✅' },
-                    error: { bg: 'bg-red-500', icon: '❌' },
-                    warning: { bg: 'bg-yellow-500', icon: '⚠️' }
-                };
-                const cfg = config[tipo];
-                alertDiv.className = `fixed top-20 right-4 ${cfg.bg} text-white px-6 py-3 rounded-lg shadow-lg z-50 alert-slide`;
-                alertDiv.innerHTML = `${cfg.icon} ${mensagem}`;
-                document.body.appendChild(alertDiv);
-                setTimeout(() => {
-                    alertDiv.style.opacity = '0';
-                    setTimeout(() => alertDiv.remove(), 300);
-                }, 4000);
-            }
+        // Salvar dados no localStorage
+        function salvarDados() {
+            const data = {
+                produtos: produtos,
+                historico: historico,
+                nextId: nextId
+            };
+            localStorage.setItem('estoque_mtn', JSON.stringify(data));
+            console.log('💾 Dados salvos');
         }
 
-        // Inicialização
-        const sistema = new ControleEstoque();
-
-        // Event Listeners
-        document.getElementById('productForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const nome = document.getElementById('prodNome').value;
+        // Cadastrar produto
+        function cadastrarProduto() {
+            const nome = document.getElementById('prodNome').value.trim();
             const qtd = parseFloat(document.getElementById('prodQtd').value);
             const precoCompra = parseFloat(document.getElementById('prodPrecoCompra').value);
             const precoVenda = parseFloat(document.getElementById('prodPrecoVenda').value);
             const estoqueMin = parseFloat(document.getElementById('prodEstoqueMin').value);
             
-            if (nome && !isNaN(qtd) && !isNaN(precoCompra) && !isNaN(precoVenda) && !isNaN(estoqueMin)) {
-                sistema.cadastrarProduto(nome, qtd, precoCompra, precoVenda, estoqueMin);
-                e.target.reset();
-            } else {
-                sistema.mostrarAlerta('error', 'Preencha todos os campos correctamente!');
+            if (!nome) {
+                alert('Digite o nome do produto!');
+                return;
             }
-        });
-
-        document.getElementById('movementForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('movProdutoId').value);
+            if (isNaN(qtd) || qtd < 0) {
+                alert('Quantidade inválida!');
+                return;
+            }
+            if (isNaN(precoCompra) || precoCompra < 0) {
+                alert('Preço de compra inválido!');
+                return;
+            }
+            if (isNaN(precoVenda) || precoVenda < 0) {
+                alert('Preço de venda inválido!');
+                return;
+            }
+            if (isNaN(estoqueMin) || estoqueMin < 0) {
+                alert('Estoque mínimo inválido!');
+                return;
+            }
+            
+            const novoProduto = {
+                id: nextId++,
+                nome: nome,
+                quantidade: qtd,
+                precoCompra: precoCompra,
+                precoVenda: precoVenda,
+                estoqueMinimo: estoqueMin
+            };
+            
+            produtos.push(novoProduto);
+            
+            // Registrar histórico
+            historico.unshift({
+                data: new Date().toLocaleString('pt-PT'),
+                produtoNome: nome,
+                tipo: 'entrada',
+                quantidade: qtd,
+                valorUnitario: precoCompra,
+                estoquePos: qtd,
+                observacao: 'Cadastro inicial'
+            });
+            
+            salvarDados();
+            atualizarTudo();
+            
+            // Limpar formulário
+            document.getElementById('prodNome').value = '';
+            document.getElementById('prodQtd').value = '';
+            document.getElementById('prodPrecoCompra').value = '';
+            document.getElementById('prodPrecoVenda').value = '';
+            document.getElementById('prodEstoqueMin').value = '';
+            
+            alert('✅ Produto cadastrado com sucesso!');
+        }
+        
+        // Registrar movimento
+        function registrarMovimento() {
+            const produtoId = parseInt(document.getElementById('movProdutoId').value);
             const tipo = document.getElementById('movTipo').value;
             const quantidade = parseFloat(document.getElementById('movQuantidade').value);
-            const valor = parseFloat(document.getElementById('movValorUnitario').value);
+            const valorUnitario = parseFloat(document.getElementById('movValorUnitario').value);
             
-            if (id && !isNaN(quantidade) && !isNaN(valor) && quantidade > 0 && valor > 0) {
-                sistema.registrarMovimento(id, tipo, quantidade, valor);
-                e.target.reset();
-                document.getElementById('movProdutoId').value = '';
+            if (!produtoId) {
+                alert('Selecione um produto!');
+                return;
+            }
+            if (isNaN(quantidade) || quantidade <= 0) {
+                alert('Quantidade inválida!');
+                return;
+            }
+            if (isNaN(valorUnitario) || valorUnitario <= 0) {
+                alert('Valor unitário inválido!');
+                return;
+            }
+            
+            const produto = produtos.find(p => p.id === produtoId);
+            if (!produto) {
+                alert('Produto não encontrado!');
+                return;
+            }
+            
+            if (tipo === 'saida' && produto.quantidade < quantidade) {
+                alert(`❌ Estoque insuficiente! Disponível: ${produto.quantidade} unidades`);
+                return;
+            }
+            
+            const qtdAntiga = produto.quantidade;
+            if (tipo === 'entrada') {
+                produto.quantidade += quantidade;
             } else {
-                sistema.mostrarAlerta('error', 'Preencha todos os campos correctamente!');
+                produto.quantidade -= quantidade;
             }
-        });
-
-        // Botões de ações globais
-        document.getElementById('btnLimpar').addEventListener('click', () => {
-            sistema.limparTodosDados();
-        });
-
-        document.getElementById('btnExportar').addEventListener('click', () => {
-            sistema.exportarDados();
-        });
-
-        document.getElementById('btnImportar').addEventListener('click', () => {
-            document.getElementById('fileImportar').click();
-        });
-
-        document.getElementById('fileImportar').addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                sistema.importarDados(e.target.files[0]);
-                e.target.value = '';
+            
+            // Registrar histórico
+            historico.unshift({
+                data: new Date().toLocaleString('pt-PT'),
+                produtoNome: produto.nome,
+                tipo: tipo,
+                quantidade: quantidade,
+                valorUnitario: valorUnitario,
+                estoquePos: produto.quantidade
+            });
+            
+            salvarDados();
+            atualizarTudo();
+            
+            // Limpar formulário
+            document.getElementById('movQuantidade').value = '';
+            document.getElementById('movValorUnitario').value = '';
+            document.getElementById('movProdutoId').value = '';
+            
+            // Alerta de estoque baixo
+            if (produto.quantidade <= produto.estoqueMinimo) {
+                alert(`⚠️ ALERTA: ${produto.nome} está com estoque baixo (${produto.quantidade} unidades). Mínimo: ${produto.estoqueMinimo}`);
+            } else {
+                alert(`✅ ${tipo === 'entrada' ? 'Entrada' : 'Saída'} registrada com sucesso!`);
             }
-        });
-
+        }
+        
+        // Limpar todos os dados
+        function limparDados() {
+            if (confirm('⚠️ Tem certeza que deseja limpar TODOS os dados? Esta ação não pode ser desfeita!')) {
+                produtos = [];
+                historico = [];
+                nextId = 1;
+                salvarDados();
+                atualizarTudo();
+                alert('🗑️ Todos os dados foram removidos!');
+            }
+        }
+        
+        // Atualizar interface
+        function atualizarTudo() {
+            atualizarStats();
+            atualizarTabelaEstoque();
+            atualizarHistorico();
+            atualizarAlertas();
+            atualizarSelectProdutos();
+            atualizarGrafico();
+        }
+        
+        function atualizarStats() {
+            document.getElementById('totalProdutos').textContent = produtos.length;
+            const valorTotal = produtos.reduce((total, p) => total + (p.quantidade * p.precoVenda), 0);
+            document.getElementById('valorTotalEstoque').innerHTML = formatMTn(valorTotal);
+            const baixos = produtos.filter(p => p.quantidade <= p.estoqueMinimo).length;
+            document.getElementById('produtosBaixo').textContent = baixos;
+            document.getElementById('totalMovimentacoes').textContent = historico.length;
+        }
+        
+        function atualizarTabelaEstoque() {
+            const tbody = document.getElementById('estoqueTableBody');
+            if (produtos.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4">Nenhum produto cadastrado</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = produtos.map(p => `
+                <tr class="border-b ${p.quantidade <= p.estoqueMinimo ? 'bg-red-50' : ''}">
+                    <td class="px-4 py-2">${p.id}</td>
+                    <td class="px-4 py-2 font-medium">${p.nome}</td>
+                    <td class="px-4 py-2 text-right font-bold ${p.quantidade <= p.estoqueMinimo ? 'text-red-600' : ''}">${p.quantidade}</td>
+                    <td class="px-4 py-2 text-right">${formatMTn(p.precoVenda)}</td>
+                    <td class="px-4 py-2 text-right">${formatMTn(p.quantidade * p.precoVenda)}</td>
+                    <td class="px-4 py-2 text-right">${p.estoqueMinimo}</td>
+                </tr>
+            `).join('');
+        }
+        
+        function atualizarHistorico() {
+            const tbody = document.getElementById('historicoTableBody');
+            if (historico.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4">Nenhuma movimentação</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = historico.slice(0, 50).map(h => `
+                <tr class="border-b">
+                    <td class="px-4 py-2 text-sm">${h.data}</td>
+                    <td class="px-4 py-2">${h.produtoNome}</td>
+                    <td class="px-4 py-2 text-center">
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold ${h.tipo === 'entrada' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                            ${h.tipo === 'entrada' ? '📥 Entrada' : '📤 Saída'}
+                        </span>
+                    </td>
+                    <td class="px-4 py-2 text-right">${h.quantidade}</td>
+                    <td class="px-4 py-2 text-right">${formatMTn(h.valorUnitario)}</td>
+                    <td class="px-4 py-2 text-right font-medium">${h.estoquePos}</td>
+                </tr>
+            `).join('');
+        }
+        
+        function atualizarAlertas() {
+            const alertasDiv = document.getElementById('alertasList');
+            const baixos = produtos.filter(p => p.quantidade <= p.estoqueMinimo);
+            
+            if (baixos.length === 0) {
+                alertasDiv.innerHTML = '<div class="text-green-600 text-center py-4">✅ Todos os produtos estão com estoque adequado!</div>';
+                return;
+            }
+            
+            alertasDiv.innerHTML = baixos.map(p => `
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg mb-2">
+                    <h4 class="font-bold text-red-800">⚠️ ${p.nome}</h4>
+                    <p class="text-sm text-red-600">Estoque actual: ${p.quantidade} | Mínimo: ${p.estoqueMinimo}</p>
+                    <p class="text-xs text-red-500">Valor: ${formatMTn(p.quantidade * p.precoVenda)}</p>
+                </div>
+            `).join('');
+        }
+        
+        function atualizarSelectProdutos() {
+            const select = document.getElementById('movProdutoId');
+            if (produtos.length === 0) {
+                select.innerHTML = '<option value="">Nenhum produto cadastrado</option>';
+                return;
+            }
+            
+            select.innerHTML = '<option value="">Selecione um produto</option>' + 
+                produtos.map(p => `<option value="${p.id}">${p.id} - ${p.nome} (Estoque: ${p.quantidade})</option>`).join('');
+        }
+        
+        function atualizarGrafico() {
+            if (produtos.length === 0) {
+                if (window.estoqueChart) window.estoqueChart.destroy();
+                return;
+            }
+            
+            const ctx = document.getElementById('estoqueChart').getContext('2d');
+            const nomes = produtos.map(p => p.nome);
+            const quantidades = produtos.map(p => p.quantidade);
+            const cores = produtos.map(p => p.quantidade <= p.estoqueMinimo ? '#ef4444' : '#10b981');
+            
+            if (window.estoqueChart) window.estoqueChart.destroy();
+            
+            window.estoqueChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: nomes,
+                    datasets: [{
+                        label: 'Quantidade em Estoque',
+                        data: quantidades,
+                        backgroundColor: cores,
+                        borderColor: cores.map(c => c === '#ef4444' ? '#dc2626' : '#059669'),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Quantidade' } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+        
+        // Inicializar eventos
+        document.getElementById('btnCadastrar').addEventListener('click', cadastrarProduto);
+        document.getElementById('btnRegistrar').addEventListener('click', registrarMovimento);
+        document.getElementById('btnLimpar').addEventListener('click', limparDados);
+        
         // Sistema de Tabs
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.getAttribute('data-tab');
-                document.querySelectorAll('.tab-button').forEach(btn => {
-                    btn.classList.remove('active', 'text-green-600', 'border-green-600');
-                    btn.classList.add('text-gray-600', 'border-transparent');
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('active', 'text-green-600', 'border-green-600');
+                    b.classList.add('text-gray-600');
+                    b.classList.remove('border-b-2');
                 });
-                button.classList.add('active', 'text-green-600', 'border-green-600');
-                button.classList.remove('text-gray-600', 'border-transparent');
+                btn.classList.add('active', 'text-green-600', 'border-green-600');
+                btn.classList.add('border-b-2');
                 
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+                document.querySelectorAll('.tab-conteudo').forEach(c => c.classList.add('hidden'));
                 if (tabId === 'estoque') document.getElementById('tabEstoque').classList.remove('hidden');
                 if (tabId === 'historico') document.getElementById('tabHistorico').classList.remove('hidden');
                 if (tabId === 'alertas') document.getElementById('tabAlertas').classList.remove('hidden');
             });
         });
-
-        // Suporte para tecla Enter nos formulários
-        document.querySelectorAll('form input').forEach(input => {
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    e.target.form.dispatchEvent(new Event('submit'));
-                }
-            });
-        });
-
-        // Indicador de dados salvos (console)
-        console.log('🚀 Sistema inicializado - Dados salvos automaticamente no localStorage');
+        
+        // Iniciar
+        carregarDados();
     </script>
 </body>
 </html>

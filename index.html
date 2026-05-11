@@ -27,6 +27,10 @@
         .alert-slide {
             animation: slideIn 0.3s ease-out;
         }
+        .campo-invalido {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100">
@@ -37,7 +41,7 @@
                 <div>
                     <h1 class="text-3xl font-bold mb-2">📦 Sistema de Controle de Estoque</h1>
                     <p class="text-green-100">Moçambique • Valores em Metical (MTn)</p>
-                    <p class="text-xs text-green-200 mt-1">💾 Dados salvos automaticamente no navegador</p>
+                    <p class="text-xs text-green-200 mt-1">💾 Dados salvos automaticamente | 🚫 Sistema anti-duplicação</p>
                 </div>
                 <div class="text-right">
                     <div class="text-2xl font-bold">🇲🇿</div>
@@ -81,7 +85,7 @@
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <h2 class="text-xl font-bold mb-4 text-gray-800">➕ Cadastrar Produto</h2>
                     <div class="space-y-3">
-                        <input type="text" id="prodNome" placeholder="Nome do produto" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <input type="text" id="prodNome" placeholder="Nome do produto (ex: Arroz, Óleo, Caderno...)" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                         <input type="number" id="prodQtd" placeholder="Quantidade inicial" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                         <input type="number" id="prodPrecoCompra" placeholder="Preço de compra (MTn)" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                         <input type="number" id="prodPrecoVenda" placeholder="Preço de venda (MTn)" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
@@ -134,7 +138,7 @@
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm">
                                 <thead class="bg-gray-50">
-                                    <tr><th class="px-4 py-2">ID</th><th class="px-4 py-2">Produto</th><th class="px-4 py-2">Qtd</th><th class="px-4 py-2">Preço Venda</th><th class="px-4 py-2">Valor Total</th><th class="px-4 py-2">Mínimo</th></tr>
+                                    <tr><th class="px-4 py-2">ID</th><th class="px-4 py-2">Produto</th><th class="px-4 py-2">Qtd</th><th class="px-4 py-2">Preço Venda</th><th class="px-4 py-2">Valor Total</th><th class="px-4 py-2">Mínimo</th><th class="px-4 py-2">Ações</th></tr>
                                 </thead>
                                 <tbody id="estoqueTableBody"></tbody>
                             </table>
@@ -205,7 +209,32 @@
             console.log('💾 Dados salvos');
         }
 
-        // Cadastrar produto
+        // Verificar se produto já existe (case insensitive)
+        function produtoExiste(nome, ignorarId = null) {
+            const nomeNormalizado = nome.trim().toLowerCase();
+            return produtos.some(p => 
+                p.nome.toLowerCase() === nomeNormalizado && p.id !== ignorarId
+            );
+        }
+
+        // Mostrar alerta personalizado
+        function mostrarAlerta(mensagem, tipo = 'erro') {
+            const alertDiv = document.createElement('div');
+            const cores = {
+                erro: 'bg-red-500',
+                sucesso: 'bg-green-500',
+                alerta: 'bg-yellow-500'
+            };
+            alertDiv.className = `fixed top-20 right-4 ${cores[tipo]} text-white px-6 py-3 rounded-lg shadow-lg z-50 alert-slide`;
+            alertDiv.innerHTML = mensagem;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 4000);
+        }
+
+        // Cadastrar produto com validação anti-duplicação
         function cadastrarProduto() {
             const nome = document.getElementById('prodNome').value.trim();
             const qtd = parseFloat(document.getElementById('prodQtd').value);
@@ -213,25 +242,40 @@
             const precoVenda = parseFloat(document.getElementById('prodPrecoVenda').value);
             const estoqueMin = parseFloat(document.getElementById('prodEstoqueMin').value);
             
+            // Validações
             if (!nome) {
-                alert('Digite o nome do produto!');
+                mostrarAlerta('❌ Digite o nome do produto!', 'erro');
+                document.getElementById('prodNome').classList.add('campo-invalido');
                 return;
             }
+            document.getElementById('prodNome').classList.remove('campo-invalido');
+            
+            // VALIDAÇÃO DE DUPLICIDADE
+            if (produtoExiste(nome)) {
+                mostrarAlerta(`❌ Produto "${nome}" já existe no sistema! Use um nome diferente.`, 'erro');
+                document.getElementById('prodNome').classList.add('campo-invalido');
+                return;
+            }
+            
             if (isNaN(qtd) || qtd < 0) {
-                alert('Quantidade inválida!');
+                mostrarAlerta('❌ Quantidade inválida!', 'erro');
                 return;
             }
             if (isNaN(precoCompra) || precoCompra < 0) {
-                alert('Preço de compra inválido!');
+                mostrarAlerta('❌ Preço de compra inválido!', 'erro');
                 return;
             }
             if (isNaN(precoVenda) || precoVenda < 0) {
-                alert('Preço de venda inválido!');
+                mostrarAlerta('❌ Preço de venda inválido!', 'erro');
                 return;
             }
             if (isNaN(estoqueMin) || estoqueMin < 0) {
-                alert('Estoque mínimo inválido!');
+                mostrarAlerta('❌ Estoque mínimo inválido!', 'erro');
                 return;
+            }
+            
+            if (precoVenda < precoCompra) {
+                mostrarAlerta('⚠️ Atenção: Preço de venda menor que preço de compra! Pode gerar prejuízo.', 'alerta');
             }
             
             const novoProduto = {
@@ -266,10 +310,10 @@
             document.getElementById('prodPrecoVenda').value = '';
             document.getElementById('prodEstoqueMin').value = '';
             
-            alert('✅ Produto cadastrado com sucesso!');
+            mostrarAlerta(`✅ Produto "${nome}" cadastrado com sucesso!`, 'sucesso');
         }
         
-        // Registrar movimento
+        // Registrar movimento com validação
         function registrarMovimento() {
             const produtoId = parseInt(document.getElementById('movProdutoId').value);
             const tipo = document.getElementById('movTipo').value;
@@ -277,26 +321,26 @@
             const valorUnitario = parseFloat(document.getElementById('movValorUnitario').value);
             
             if (!produtoId) {
-                alert('Selecione um produto!');
+                mostrarAlerta('❌ Selecione um produto!', 'erro');
                 return;
             }
             if (isNaN(quantidade) || quantidade <= 0) {
-                alert('Quantidade inválida!');
+                mostrarAlerta('❌ Quantidade inválida! Digite um valor maior que zero.', 'erro');
                 return;
             }
             if (isNaN(valorUnitario) || valorUnitario <= 0) {
-                alert('Valor unitário inválido!');
+                mostrarAlerta('❌ Valor unitário inválido! Digite um valor maior que zero.', 'erro');
                 return;
             }
             
             const produto = produtos.find(p => p.id === produtoId);
             if (!produto) {
-                alert('Produto não encontrado!');
+                mostrarAlerta('❌ Produto não encontrado!', 'erro');
                 return;
             }
             
             if (tipo === 'saida' && produto.quantidade < quantidade) {
-                alert(`❌ Estoque insuficiente! Disponível: ${produto.quantidade} unidades`);
+                mostrarAlerta(`❌ Estoque insuficiente! Disponível: ${produto.quantidade} unidades`, 'erro');
                 return;
             }
             
@@ -327,9 +371,20 @@
             
             // Alerta de estoque baixo
             if (produto.quantidade <= produto.estoqueMinimo) {
-                alert(`⚠️ ALERTA: ${produto.nome} está com estoque baixo (${produto.quantidade} unidades). Mínimo: ${produto.estoqueMinimo}`);
+                mostrarAlerta(`⚠️ ALERTA: ${produto.nome} está com estoque baixo (${produto.quantidade} unidades). Mínimo: ${produto.estoqueMinimo}`, 'alerta');
             } else {
-                alert(`✅ ${tipo === 'entrada' ? 'Entrada' : 'Saída'} registrada com sucesso!`);
+                mostrarAlerta(`✅ ${tipo === 'entrada' ? 'Entrada' : 'Saída'} registrada com sucesso!`, 'sucesso');
+            }
+        }
+        
+        // Remover produto
+        function removerProduto(id) {
+            const produto = produtos.find(p => p.id === id);
+            if (produto && confirm(`⚠️ Tem certeza que deseja remover "${produto.nome}"?`)) {
+                produtos = produtos.filter(p => p.id !== id);
+                salvarDados();
+                atualizarTudo();
+                mostrarAlerta(`✅ Produto "${produto.nome}" removido com sucesso!`, 'sucesso');
             }
         }
         
@@ -341,7 +396,7 @@
                 nextId = 1;
                 salvarDados();
                 atualizarTudo();
-                alert('🗑️ Todos os dados foram removidos!');
+                mostrarAlerta('🗑️ Todos os dados foram removidos!', 'sucesso');
             }
         }
         
@@ -367,7 +422,7 @@
         function atualizarTabelaEstoque() {
             const tbody = document.getElementById('estoqueTableBody');
             if (produtos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4">Nenhum produto cadastrado</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4">Nenhum produto cadastrado</td></tr>';
                 return;
             }
             
@@ -379,6 +434,11 @@
                     <td class="px-4 py-2 text-right">${formatMTn(p.precoVenda)}</td>
                     <td class="px-4 py-2 text-right">${formatMTn(p.quantidade * p.precoVenda)}</td>
                     <td class="px-4 py-2 text-right">${p.estoqueMinimo}</td>
+                    <td class="px-4 py-2 text-center">
+                        <button onclick="removerProduto(${p.id})" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs">
+                            🗑️ Remover
+                        </button>
+                    </td>
                 </tr>
             `).join('');
         }
@@ -475,6 +535,11 @@
         document.getElementById('btnCadastrar').addEventListener('click', cadastrarProduto);
         document.getElementById('btnRegistrar').addEventListener('click', registrarMovimento);
         document.getElementById('btnLimpar').addEventListener('click', limparDados);
+        
+        // Remover classe de erro ao digitar
+        document.getElementById('prodNome').addEventListener('input', function() {
+            this.classList.remove('campo-invalido');
+        });
         
         // Sistema de Tabs
         document.querySelectorAll('.tab-btn').forEach(btn => {
